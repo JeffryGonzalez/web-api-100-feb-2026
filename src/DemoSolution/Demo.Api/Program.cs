@@ -4,6 +4,8 @@
 
 
 // this is saying "heya Microsoft, I don't know - give me stuff most people need to build an API.
+using Demo.Api.Controller;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -30,5 +32,11 @@ app.UseAuthorization();
 
 app.MapControllers(); // Old Skool, OG way of creating a phone book for our receptionist.
 // It uses "reflection" to inspect our code and create the "route table"
+
+app.MapGet("/status2", () =>
+{
+    var response = new StatusResponseModel { Message = "Ok from minimal land", WhenLastChecked = DateTime.Now, CheckedBy = "Jeff"};
+    return response;
+});
 
 app.Run(); // This is a blocking method (do while(true) {....})

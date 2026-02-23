@@ -3,6 +3,7 @@
 ## Services 
 
 - Some code that owns some data (state) and all the process around that data.
+  - roughly the same definition that Dr. Alan Kay gave when someone asked him what he meant by this new term called "object oriented"
 - Service Oriented Architecture
   - "Microservices are just SOA done right"
   - Services don't (shouldn't? ) share databases.
