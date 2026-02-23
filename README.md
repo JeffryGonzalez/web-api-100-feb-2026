@@ -35,3 +35,19 @@ And
 ```sh
 git config --global user.email "Your@Email"
 ```
+
+## Getting Jeff's Code:
+
+Open a terminal here in VS Code, and run the following command:
+
+```sh
+npx gitpick -o JeffryGonzalez/web-api-100-feb-2026  ../instructor-code/
+```
+
+This will pull down my code into a directory in your profile called "instructor-code". 
+
+It will **overwrite** whatever is in that folder.
+
+But you can copy stuff out of there into your "web api 100" folder, or whatever.
+
+(If you are watching me type this, don't worry, I'll demonstrate.)
