@@ -1,4 +1,5 @@
-﻿using Marten;
+﻿using ImTools;
+using Marten;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -47,8 +48,39 @@ public class VendorController(IDocumentSession session) : ControllerBase
     [HttpGet("/vendors")]
     public async Task<ActionResult> GetAllVendorsAsync(CancellationToken token)
     {
-        var allVendors = await session.Query<VendorEntity>().ToListAsync(token);
+        var allVendors = await session.Query<VendorEntity>()
+            .Select(v => new VendorSummaryModel
+            {
+                Id = v.Id,
+                Name  = v.Name,
+                Url = v.Url
+            })
+            .ToListAsync(token);
         return Ok(allVendors);
+    }
+
+    [HttpGet("/vendors/{id:guid}")]
+    public async Task<ActionResult> GetVendorByIdAsync(Guid id)
+    {
+        var vendor = await session.Query<VendorEntity>()
+           .Where(v => v.Id == id)
+             .Select(v => new VendorDetailsModel
+             {
+                 Id = v.Id,
+                 Name = v.Name,
+                 Url = v.Url,
+                 PointOfContact = v.PointOfContact
+             })
+            .SingleOrDefaultAsync();
+
+        if(vendor is null)
+        {
+            return NotFound(); // 404
+        }
+        else
+        {
+            return Ok(vendor);
+        }
     }
 }
 
@@ -61,6 +93,24 @@ public class VendorEntity
     public required VendorPointOfContactModel PointOfContact { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; }
+}
+
+public record VendorDetailsModel
+{
+    public Guid Id { get; set; }
+    public required string Name { get; set; }
+
+    public required string Url { get; set; }
+    public required VendorPointOfContactModel PointOfContact { get; set; }
+
+}
+
+public record VendorSummaryModel
+{
+    public Guid Id { get; set; }
+    public required string Name { get; set; }
+
+    public required string Url { get; set; }
 }
 
 
