@@ -1,3 +1,5 @@
+using Marten;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults(); // this is using the Service Defaults project, setting up SRE etc.
 // Add services to the container.
@@ -5,6 +7,25 @@ builder.AddServiceDefaults(); // this is using the Service Defaults project, set
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+var connectionString = builder.Configuration.GetConnectionString("software-db") ??
+    throw new Exception("no connection string");
+
+// this next like will look like this, but be slightly different for whatever specific database you are connection to.
+
+builder.Services.AddMarten(options =>
+{
+    options.Connection(connectionString);
+
+}).UseLightweightSessions();
+
+// look at the environment variable called ASPNETCORE_ENVIRONMENT. If it is there, and has a value,
+// look in appsettings.ENVIRONMENT.json
+
+// appsettings.json
+// ConnectionString__software-db
+
+// The last place it looks is Environment Variables.
 
 var app = builder.Build();
 

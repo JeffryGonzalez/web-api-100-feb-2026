@@ -10,6 +10,10 @@ public class VendorController : ControllerBase
     public async Task<ActionResult> AddVendorAsync(
         [FromBody] CreateVendorRequestModel request)
     {
+        if(request.Name.Trim().ToLower() == "oracle")
+        {
+            return BadRequest("We are not allowed to do business with them");
+        }
         // if you are going to go across the network, touch the file system, database, whatever
         // YOU MUST USE ASYNC AND AWAIT.
         return Ok(request);
@@ -20,7 +24,7 @@ public record CreateVendorRequestModel
 {
     [MinLength(3), MaxLength(100)]
     public required string Name { get; set; }
-    [Url]
+   
     public required string Url { get; set; }
     public required VendorPointOfContactModel PointOfContact { get; set; } 
 }
