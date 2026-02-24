@@ -33,6 +33,8 @@ app.UseAuthorization();
 app.MapControllers(); // Old Skool, OG way of creating a phone book for our receptionist.
 // It uses "reflection" to inspect our code and create the "route table"
 
+
+// Less Allocations.
 app.MapGet("/status2", () =>
 {
     var response = new StatusResponseModel { Message = "Ok from minimal land", WhenLastChecked = DateTime.Now, CheckedBy = "Jeff"};
