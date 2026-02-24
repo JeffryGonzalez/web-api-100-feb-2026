@@ -37,8 +37,18 @@ public class VendorController(IDocumentSession session) : ControllerBase
         };
         // save "it" to the database
         session.Store(entityToSave);
+        // integrate services with remote procedure calls.
+        // transactions cannot span database boundaries.
+        // post the vendor another API AccountsPayable
         await session.SaveChangesAsync();
-        return Ok(request);
+        return Ok();
+    }
+
+    [HttpGet("/vendors")]
+    public async Task<ActionResult> GetAllVendorsAsync(CancellationToken token)
+    {
+        var allVendors = await session.Query<VendorEntity>().ToListAsync(token);
+        return Ok(allVendors);
     }
 }
 
