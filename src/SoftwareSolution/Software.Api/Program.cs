@@ -13,6 +13,12 @@ var connectionString = builder.Configuration.GetConnectionString("software-db") 
 
 // this next like will look like this, but be slightly different for whatever specific database you are connection to.
 
+// scoped services are services you use in your controllers, endpoints, etc.
+// It is created "brand new" for each http request, and automatically "disposed" at the end of the request.
+
+//builder.Services.AddScoped<IDocumentSession, SomeInternalConcreteClass>();
+//builder.Services.AddSingleton<NpgSqlConnectionManager>();
+
 builder.Services.AddMarten(options =>
 {
     options.Connection(connectionString);

@@ -1,14 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Marten;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace Software.Api.Vendors;
 
 [ApiController]
-public class VendorController : ControllerBase
+public class VendorController(IDocumentSession session) : ControllerBase
 {
+    //private IDocumentSession _session;
+
+    //public VendorController(IDocumentSession session)
+    //{
+    //    _session = session;
+    //}
     [HttpPost("/vendors")]
     public async Task<ActionResult> AddVendorAsync(
-        [FromBody] CreateVendorRequestModel request)
+        [FromBody] CreateVendorRequestModel request
+  
+        )
     {
         if(request.Name.Trim().ToLower() == "oracle")
         {
@@ -16,9 +25,34 @@ public class VendorController : ControllerBase
         }
         // if you are going to go across the network, touch the file system, database, whatever
         // YOU MUST USE ASYNC AND AWAIT.
+        // 
+        var entityToSave = new VendorEntity
+        {
+            Name = request.Name,
+            Id = Guid.NewGuid(),
+            PointOfContact = request.PointOfContact,
+            Url = request.Url,
+            CreatedAt  = DateTimeOffset.UtcNow
+
+        };
+        // save "it" to the database
+        session.Store(entityToSave);
+        await session.SaveChangesAsync();
         return Ok(request);
     }
 }
+
+public class VendorEntity
+{
+    public Guid Id { get; set; }
+    public required string Name { get; set; }
+
+    public required string Url { get; set; }
+    public required VendorPointOfContactModel PointOfContact { get; set; }
+
+    public DateTimeOffset CreatedAt { get; set; }
+}
+
 
 public record CreateVendorRequestModel
 {
