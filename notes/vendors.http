@@ -1,0 +1,23 @@
+
+POST https://localhost:1337/vendors
+Content-Type: application/json
+
+{
+   "name": "Microsoft",
+    "url": "https://www.microsoft.com",
+    "pointOfContact": {
+        "name": "Satya Nadella",
+        "email": "satya@microsoft",
+        "phone": "888 999-1212"
+    }
+}
+
+
+### 
+
+GET https://localhost:1337/vendors
+
+
+
+GET https://localhost:1337/vendors/{id}
+

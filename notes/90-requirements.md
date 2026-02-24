@@ -16,7 +16,67 @@ We have arrangements with vendors. Each vendor has:
   - Email
   - Phone Number
 
+
+- We have to send them the data above, but without the id.
+- We will have some rules, and this is class, so we can em up.
+
 Vendors have a set of software they provide that we support.
+
+
+When we are designing APIs - we really have only three paintbrushes:
+
+- Resource 
+  - "An important thingy" - it is a HUMAN thing - computers do not care.
+  - We organize our API around the idea of resourcers and hierarchies of resources.
+  - https://???/vendors
+  - Resources are identifed through URIs (Uniform Resource Identifier)
+    - In OOP, duplications is "bad" - Multiple resources that are "aliases" to the same "thing"
+    - /employees
+    - Subordinate resources that are "documents"
+      - /employees/{id}
+      - 
+- Representation
+  - Data we send in the "Body" of some requests (not all requests support representations)
+  - or data we get back from the API after an operation.
+- Methods (GET POST PUT, DELETE, ...)
+
+POST - consider this entity for membership in your organization.
+
+
+
+```http
+GET /employees/bob-smith
+
+200 Ok
+Content-Type: application/json
+
+{
+
+  "id": "bob-smith",
+  "name": {
+    "firstName": "Robert",
+    "lastName": "Smith"
+  },
+  "workPhone": "555-1212",
+  "job": "Singer/Guitarist for the Cure"
+
+}
+
+GET /employes/bob-smith/manager
+
+{
+
+
+}
+
+GET /employees/bob-smith/performance-reviews
+
+200 Ok
+
+[]
+
+
+GET /employees/brad-pitt
 
 
 
