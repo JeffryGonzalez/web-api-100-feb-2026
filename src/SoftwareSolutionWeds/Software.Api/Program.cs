@@ -2,6 +2,7 @@ using Marten;
 using Software.Api.Vendors;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddNpgsqlDataSource("software-db"); // this is using the NpgsqlDataSource project, which is a wrapper around the Npgsql library, and it is used to create a connection pool for the database.
 builder.Services.AddValidation();
 builder.AddServiceDefaults(); // this is using the Service Defaults project, setting up SRE etc.
 // Add services to the container.
@@ -23,9 +24,9 @@ var connectionString = builder.Configuration.GetConnectionString("software-db") 
 
 builder.Services.AddMarten(options =>
 {
-    options.Connection(connectionString);
 
-}).UseLightweightSessions();
+
+}).UseLightweightSessions().UseNpgsqlDataSource();
 
 // look at the environment variable called ASPNETCORE_ENVIRONMENT. If it is there, and has a value,
 // look in appsettings.ENVIRONMENT.json
@@ -49,9 +50,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapPost("/ma/vendors", (CreateVendorRequestModel request) =>
-{
-    return TypedResults.Ok();
-});
+//app.MapPost("/ma/vendors", (CreateVendorRequestModel request) =>
+//{
+//    return TypedResults.Ok();
+//});
 app.MapDefaultEndpoints(); // this comes from service defaults, and this is mostly health checks.
 app.Run();
