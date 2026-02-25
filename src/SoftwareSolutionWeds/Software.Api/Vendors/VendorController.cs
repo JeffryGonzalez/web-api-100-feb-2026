@@ -1,6 +1,7 @@
 ﻿using ImTools;
 using Marten;
 using Microsoft.AspNetCore.Mvc;
+using Software.Api.Clients;
 using System.ComponentModel.DataAnnotations;
 
 namespace Software.Api.Vendors;
@@ -16,7 +17,9 @@ public class VendorController(IDocumentSession session) : ControllerBase
     //}
     [HttpPost("/vendors")]
     public async Task<ActionResult> AddVendorAsync(
-        [FromBody] CreateVendorRequestModel request
+        [FromBody] CreateVendorRequestModel request,
+        [FromServices] NotificationsApi api
+ 
   
         )
     {
@@ -41,7 +44,10 @@ public class VendorController(IDocumentSession session) : ControllerBase
         // integrate services with remote procedure calls.
         // transactions cannot span database boundaries.
         // post the vendor another API AccountsPayable
-        await session.SaveChangesAsync();
+        await api.SendNotification(new SoftwareShared.Notifications.NotificationRequest { Message = "Just letting you know..." });
+        await session.SaveChangesAsync(); // saved in the DB!
+
+        // we have to send a POST to the notification API to let, uh, someone know that a new vendor was added.
         return Ok();
     }
 

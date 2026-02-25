@@ -1,4 +1,5 @@
 using Marten;
+using Software.Api.Clients;
 using Software.Api.Vendors;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,7 +36,11 @@ builder.Services.AddMarten(options =>
 // ConnectionString__software-db
 
 // The last place it looks is Environment Variables.
-
+builder.Services.AddHttpClient<NotificationsApi>(client =>
+{
+    // we prefer https, but we'll http if that is availble, and get the address for that api.
+    client.BaseAddress = new Uri("https+http://notification-api");
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
