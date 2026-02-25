@@ -1,4 +1,6 @@
 ﻿using Alba;
+using Marten;
+using Microsoft.Extensions.DependencyInjection;
 using Software.Api.Vendors;
 using Software.Tests.Fixtures;
 
@@ -18,6 +20,18 @@ public class AddingAVendor(SoftwareSystemTestFixture fixture) : IClassFixture<So
             api.Post.Json(vendorToPost).ToUrl("/vendors");
             api.StatusCodeShouldBeOk();
         });
-        
+
+
+        // We could check the database
+        using var scope = fixture.Host.Services.CreateScope();
+        var session = scope.ServiceProvider.GetRequiredService<IDocumentSession>();
+
+
+        var vendor = await session.Query<VendorEntity>().FirstOrDefaultAsync(v => v.Name == vendorToPost.Name, TestContext.Current.CancellationToken);
+
+        // Why would we do this? What would we look for?
+        // Another way?
+
+        Assert.NotNull(vendor);
     }
 }

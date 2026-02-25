@@ -2,7 +2,6 @@
 using Alba.Security;
 using Testcontainers.PostgreSql;
 
-
 namespace Software.Tests.Fixtures;
 
 public class SoftwareSystemTestFixture : IAsyncLifetime
