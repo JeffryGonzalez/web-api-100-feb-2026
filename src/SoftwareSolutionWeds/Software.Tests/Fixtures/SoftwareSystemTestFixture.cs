@@ -2,6 +2,7 @@
 using Alba.Security;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 using Software.Api.Clients;
 using SoftwareShared.Notifications;
 using Testcontainers.PostgreSql;
@@ -12,9 +13,10 @@ public class SoftwareSystemTestFixture : IAsyncLifetime
 {
     public IAlbaHost Host { get; set; } = null!;
     private PostgreSqlContainer _pgContainer = null!;
-
+    public IDoNotifications NotificationMock { get; set; } = null!; 
     public async ValueTask InitializeAsync()
     {
+        NotificationMock = Substitute.For<IDoNotifications>();
         _pgContainer = new PostgreSqlBuilder("postgres:17.6")
             .Build(); 
         await _pgContainer.StartAsync();
@@ -25,7 +27,7 @@ public class SoftwareSystemTestFixture : IAsyncLifetime
             // config.ConfigureTestServices = replace one that is there with something else for this test.
             config.ConfigureTestServices(sp =>
             {
-                sp.AddScoped<IDoNotifications, DummyNotifier>();
+                sp.AddScoped<IDoNotifications>(_=> NotificationMock);
             });
         }, new AuthenticationStub().WithName("test-user") );
        

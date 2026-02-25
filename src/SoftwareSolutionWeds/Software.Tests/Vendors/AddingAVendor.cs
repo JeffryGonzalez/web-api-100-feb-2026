@@ -1,8 +1,11 @@
 ﻿using Alba;
 using Marten;
 using Microsoft.Extensions.DependencyInjection;
-using Software.Api.Vendors;
+using NSubstitute;
+using Software.Api.Vendors.Data;
+using Software.Api.Vendors.Models;
 using Software.Tests.Fixtures;
+using SoftwareShared.Notifications;
 
 
 namespace Software.Tests.Vendors;
@@ -34,10 +37,13 @@ public class AddingAVendor(SoftwareSystemTestFixture fixture) : IClassFixture<So
 
 
         var vendor = await session.Query<VendorEntity>().FirstOrDefaultAsync(v => v.Name == vendorToPost.Name, TestContext.Current.CancellationToken);
-
-        // Why would we do this? What would we look for?
-        // Another way?
-
         Assert.NotNull(vendor);
+        // TODO: Check the created at property.
+
+        // TODO: Bryce - what do you want?
+        await fixture.NotificationMock.Received().SendNotification(Arg.Is<NotificationRequest>(n => n.Message.Contains("New vendor added") && n.Message.Contains(vendorToPost.Name)));
+
+        // Todo: What is the "full" scenario?
+
     }
 }

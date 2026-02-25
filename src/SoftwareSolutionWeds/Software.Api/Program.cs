@@ -1,12 +1,24 @@
 using Marten;
 using Software.Api.Clients;
-using Software.Api.Vendors;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddNpgsqlDataSource("software-db"); // this is using the NpgsqlDataSource project, which is a wrapper around the Npgsql library, and it is used to create a connection pool for the database.
 builder.Services.AddValidation();
 builder.AddServiceDefaults(); // this is using the Service Defaults project, setting up SRE etc.
 // Add services to the container.
+
+builder.Services.AddAuthentication().AddJwtBearer();
+
+//builder.Services.AddAuthorizationBuilder().AddPolicy("SoftwareCenterManager", pol =>
+//{
+//    pol.RequireRole("SoftwareCenter");
+//    pol.RequireRole("Manager");
+//}).AddPolicy("SoftwareCenter", pol =>
+//{
+//    pol.RequireRole("SoftwareCenter");
+//});
+
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -56,6 +68,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
