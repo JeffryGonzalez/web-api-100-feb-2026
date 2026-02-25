@@ -1,10 +1,12 @@
+using JasperFx.CommandLine.Descriptions;
 using Marten;
+using Software.Api.CatalogItems;
 using Software.Api.Clients;
 
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddNpgsqlDataSource("software-db"); // this is using the NpgsqlDataSource project, which is a wrapper around the Npgsql library, and it is used to create a connection pool for the database.
-builder.Services.AddValidation();
+builder.Services.AddValidation(); // [ApiController]
 builder.AddServiceDefaults(); // this is using the Service Defaults project, setting up SRE etc.
 // Add services to the container.
 builder.Services.AddSingleton<TimeProvider>(TimeProvider.System); // this is a new feature in .NET 8, and it is used to abstract away the system clock, so we can use a different clock in our tests.
@@ -73,6 +75,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapCatalogItemRoutes();
 
 //app.MapPost("/ma/vendors", (CreateVendorRequestModel request) =>
 //{

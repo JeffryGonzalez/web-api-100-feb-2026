@@ -7,6 +7,9 @@ We are building them an API.
 ## Vendors
 
 We have arrangements with vendors. Each vendor has:
+Vendors are forever. once is created they cannot change name, or id or website.
+
+
 
 - And ID we assign
 - A Name
@@ -22,6 +25,14 @@ We have arrangements with vendors. Each vendor has:
 
 Vendors have a set of software they provide that we support.
 
+PUT /vendors/{id}/pointofcontact
+
+{
+  "name": "Sally',
+  "email": "Sally@company.com",
+  "phone": "999-9999"
+
+}
 
 When we are designing APIs - we really have only three paintbrushes:
 
@@ -88,8 +99,61 @@ A catalog item has:
 - An ID we assign
 - A vendor the item is associated with
 - The name of the software item
-- A description
-- A version number (we prefer SEMVER, but not all vendors use it)
+
+
+
+
+1. Resources (url) /vendors/{id}/catalog-items
+1.1 - Headers
+
+2. Representations
+
+{
+
+  "name": "VsCode"
+}
+
+3. Methods - POST 
+
+GET - get it.
+POST - collection means add this entity (representation ) to your collection, on a document (rare) - submit this entity for processing.
+PUT - REPLACE
+DELETE - collection means if you return a success status code, that entire collection should disappear from the WWW
+
+GET /employees
+
+PUT /employees
+
+[
+
+]
+
+GET /employees --> 404
+
+# "Store" - server data that is a "mirror" of client data.
+
+POST /customers/jeff-gonzalez/shopping-cart
+
+
+POST /shopping-cart 
+Authorization: bearer Jeff Gonzalez Token
+
+{
+  "qty": 3,
+  "size": "large",
+  "sku": "Cheap Beer"
+
+}
+
+DELETE /shopping-cart 
+
+
+
+
+
+
+
+
 
 
 ## Use Cases

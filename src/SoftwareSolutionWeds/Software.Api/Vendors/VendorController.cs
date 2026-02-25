@@ -63,6 +63,12 @@ public class VendorController(IDocumentSession session) : ControllerBase
         return Ok(allVendors);
     }
 
+    [HttpPut("/vendors/{id:guid}/point-of-contact")]
+    public async Task<ActionResult> UpdatePoc(Guid id, [FromBody] VendorPointOfContactModel request)
+    {
+        return Ok();
+    }
+
     [HttpGet("/vendors/{id:guid}")]
     public async Task<ActionResult> GetVendorByIdAsync(Guid id)
     {
