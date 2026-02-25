@@ -18,7 +18,7 @@ public class VendorController(IDocumentSession session) : ControllerBase
     [HttpPost("/vendors")]
     public async Task<ActionResult> AddVendorAsync(
         [FromBody] CreateVendorRequestModel request,
-        [FromServices] NotificationsApi api
+        [FromServices] IDoNotifications api
  
   
         )

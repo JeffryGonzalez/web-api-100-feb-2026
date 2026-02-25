@@ -2,7 +2,7 @@
 
 namespace Software.Api.Clients;
 
-public class NotificationsApi(HttpClient client)
+public class NotificationsApi(HttpClient client) : IDoNotifications
 {
 
     public async Task SendNotification(NotificationRequest request)

@@ -41,6 +41,11 @@ builder.Services.AddHttpClient<NotificationsApi>(client =>
     // we prefer https, but we'll http if that is availble, and get the address for that api.
     client.BaseAddress = new Uri("https+http://notification-api");
 });
+
+builder.Services.AddScoped<IDoNotifications>(sp =>
+{
+    return sp.GetRequiredService<NotificationsApi>();
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
