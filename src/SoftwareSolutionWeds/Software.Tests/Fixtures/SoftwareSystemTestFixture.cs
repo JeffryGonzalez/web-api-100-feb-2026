@@ -23,6 +23,7 @@ public class SoftwareSystemTestFixture : IAsyncLifetime
         _pgContainer = new PostgreSqlBuilder("postgres:17.6")
             
             .Build(); 
+       
         await _pgContainer.StartAsync();
         Host = await AlbaHost.For<Program>(config =>
         {

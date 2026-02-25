@@ -6,6 +6,7 @@ using Software.Api.Vendors.Data;
 using Software.Api.Vendors.Models;
 using Software.Tests.Fixtures;
 using SoftwareShared.Notifications;
+using System.Security.Claims;
 
 
 namespace Software.Tests.Vendors;
@@ -17,6 +18,46 @@ public class AddingAVendor(SoftwareSystemTestFixture fixture) : IClassFixture<So
 {
 
     [Fact]
+    public async Task NotAuthorized()
+    {
+        var vendorToPost = new CreateVendorRequestModel
+        {
+            Name = "Test Vendor",
+            Url = "http://testvendor.com",
+            PointOfContact = new VendorPointOfContactModel { Name = "John Doe", Email = "joe@aol.com", Phone = "867-5309" }
+        };
+        var response = await fixture.Host.Scenario(api =>
+        {
+
+            //api.WithClaim(new Claim(ClaimTypes.Role, "Manager"));
+            //api.WithClaim(new Claim(ClaimTypes.Role, "SoftwareCenter"));
+            api.Post.Json(vendorToPost).ToUrl("/vendors");
+            api.StatusCodeShouldBe(403);
+        });
+
+    }
+
+    [Fact]
+    public async Task RequestsAreValidated()
+    {
+        var vendorToPost = new CreateVendorRequestModel
+        {
+            Name = "",
+            Url = "http://testvendor.com",
+            PointOfContact = new VendorPointOfContactModel { Name = "", Email = "", Phone = "" }
+        };
+        var response = await fixture.Host.Scenario(api =>
+        {
+
+            api.WithClaim(new Claim(ClaimTypes.Role, "Manager"));
+            api.WithClaim(new Claim(ClaimTypes.Role, "SoftwareCenter"));
+            api.Post.Json(vendorToPost).ToUrl("/vendors");
+            api.StatusCodeShouldBe(400);
+        });
+
+    }
+
+    [Fact]
     public async Task CanAddVendor()
     {
         var vendorToPost = new CreateVendorRequestModel { 
@@ -26,6 +67,9 @@ public class AddingAVendor(SoftwareSystemTestFixture fixture) : IClassFixture<So
         };
         var response = await fixture.Host.Scenario(api =>
         {
+            
+            api.WithClaim(new Claim(ClaimTypes.Role, "Manager"));
+            api.WithClaim(new Claim(ClaimTypes.Role, "SoftwareCenter"));
             api.Post.Json(vendorToPost).ToUrl("/vendors");
             api.StatusCodeShouldBe(201);
         });

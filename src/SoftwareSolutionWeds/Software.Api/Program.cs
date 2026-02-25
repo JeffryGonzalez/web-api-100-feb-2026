@@ -11,14 +11,14 @@ builder.Services.AddSingleton<TimeProvider>(TimeProvider.System); // this is a n
 
 builder.Services.AddAuthentication().AddJwtBearer();
 
-//builder.Services.AddAuthorizationBuilder().AddPolicy("SoftwareCenterManager", pol =>
-//{
-//    pol.RequireRole("SoftwareCenter");
-//    pol.RequireRole("Manager");
-//}).AddPolicy("SoftwareCenter", pol =>
-//{
-//    pol.RequireRole("SoftwareCenter");
-//});
+builder.Services.AddAuthorizationBuilder().AddPolicy("SoftwareCenterManager", pol =>
+{
+    pol.RequireRole("SoftwareCenter");
+    pol.RequireRole("Manager");
+}).AddPolicy("SoftwareCenter", pol =>
+{
+    pol.RequireRole("SoftwareCenter");
+});
 
 
 builder.Services.AddControllers();

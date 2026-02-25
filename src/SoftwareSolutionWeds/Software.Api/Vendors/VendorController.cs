@@ -1,5 +1,6 @@
 ﻿
 using Marten;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Software.Api.Clients;
 using Software.Api.Vendors.Data;
@@ -12,6 +13,7 @@ public class VendorController(IDocumentSession session) : ControllerBase
 {
 
     [HttpPost("/vendors")]
+    [Authorize(Policy = "SoftwareCenterManager")] // unless you have a JWT from a trusted authority, you cannot call this endpoint.
     public async Task<ActionResult> AddVendorAsync(
         [FromBody] CreateVendorRequestModel request,
         [FromServices] IDoNotifications api,
