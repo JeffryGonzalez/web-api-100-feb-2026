@@ -1,4 +1,4 @@
-﻿using ImTools;
+﻿
 using Marten;
 using Microsoft.AspNetCore.Mvc;
 using Software.Api.Clients;
@@ -14,7 +14,8 @@ public class VendorController(IDocumentSession session) : ControllerBase
     [HttpPost("/vendors")]
     public async Task<ActionResult> AddVendorAsync(
         [FromBody] CreateVendorRequestModel request,
-        [FromServices] IDoNotifications api
+        [FromServices] IDoNotifications api,
+        [FromServices] TimeProvider clock
         )
     {
         if(request.Name.Trim().ToLower() == "oracle")
@@ -30,7 +31,7 @@ public class VendorController(IDocumentSession session) : ControllerBase
             Id = Guid.NewGuid(),
             PointOfContact = request.PointOfContact,
             Url = request.Url,
-            CreatedAt  = DateTimeOffset.UtcNow
+            CreatedAt = clock.GetUtcNow()
 
         };
         // save "it" to the database
@@ -38,11 +39,12 @@ public class VendorController(IDocumentSession session) : ControllerBase
         // integrate services with remote procedure calls.
         // transactions cannot span database boundaries.
         // post the vendor another API AccountsPayable
-        await api.SendNotification(new SoftwareShared.Notifications.NotificationRequest { Message = "Just letting you know..." });
+        await api.SendNotification(new SoftwareShared.Notifications.NotificationRequest { Message = "New vendor added " + request.Name });
         await session.SaveChangesAsync(); // saved in the DB!
 
-        // we have to send a POST to the notification API to let, uh, someone know that a new vendor was added.
-        return Ok();
+        // we have to senOk();
+        // TODO: we should map this to a details model. (I'll show this in a few)
+        return Created($"/vendors/{entityToSave.Id}",  entityToSave);
     }
 
     [HttpGet("/vendors")]

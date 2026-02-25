@@ -21,6 +21,12 @@ a name of a group of related things (documents). It's plural.
 
 e.g. "vendors", "employees", "policies", etc.
 
+"default" for what you should return is:
+- a 201 Created Status Code
+    - It should have a header called "Location" that is the url for the thing you created.
+    - It's often nice to return them a copy of the thing you just created, too.
+
+
 ### Documents
 
 Instances of an item in a collection (usually).

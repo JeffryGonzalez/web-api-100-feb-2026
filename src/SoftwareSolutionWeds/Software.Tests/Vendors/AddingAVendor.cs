@@ -27,8 +27,27 @@ public class AddingAVendor(SoftwareSystemTestFixture fixture) : IClassFixture<So
         var response = await fixture.Host.Scenario(api =>
         {
             api.Post.Json(vendorToPost).ToUrl("/vendors");
-            api.StatusCodeShouldBeOk();
+            api.StatusCodeShouldBe(201);
         });
+
+        var vendorAdded = response.ReadAsJson<VendorDetailsModel>();
+        Assert.NotNull(vendorAdded);
+
+        var location = response.Context.Response.Headers.Location.ToString();
+            Assert.NotNull(location);   
+
+
+        var getResponse = await fixture.Host.Scenario(api =>
+        {
+            api.Get.Url(location);
+            api.StatusCodeShouldBe(200);
+        });
+
+        var getBody = getResponse.ReadAsJson<VendorDetailsModel>();
+
+        Assert.Equal(vendorAdded, getBody);
+        // Go get all the vendors and make sure this is in the list...
+        // or get the id of the vendor we just created, and call GET /vendors/{id}
 
 
         // We could check the database
@@ -36,11 +55,12 @@ public class AddingAVendor(SoftwareSystemTestFixture fixture) : IClassFixture<So
         var session = scope.ServiceProvider.GetRequiredService<IDocumentSession>();
 
 
-        var vendor = await session.Query<VendorEntity>().FirstOrDefaultAsync(v => v.Name == vendorToPost.Name, TestContext.Current.CancellationToken);
+        var vendor = await session.Query<VendorEntity>().FirstOrDefaultAsync(v => v.Id == vendorAdded.Id, TestContext.Current.CancellationToken);
         Assert.NotNull(vendor);
+        Assert.Equal(vendor.CreatedAt, fixture.TestClock);
         // TODO: Check the created at property.
 
-        // TODO: Bryce - what do you want?
+        // TODO: Check that the notification API was called with the right message.
         await fixture.NotificationMock.Received().SendNotification(Arg.Is<NotificationRequest>(n => n.Message.Contains("New vendor added") && n.Message.Contains(vendorToPost.Name)));
 
         // Todo: What is the "full" scenario?

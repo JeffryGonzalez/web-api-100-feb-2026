@@ -7,6 +7,7 @@ builder.AddNpgsqlDataSource("software-db"); // this is using the NpgsqlDataSourc
 builder.Services.AddValidation();
 builder.AddServiceDefaults(); // this is using the Service Defaults project, setting up SRE etc.
 // Add services to the container.
+builder.Services.AddSingleton<TimeProvider>(TimeProvider.System); // this is a new feature in .NET 8, and it is used to abstract away the system clock, so we can use a different clock in our tests.
 
 builder.Services.AddAuthentication().AddJwtBearer();
 
