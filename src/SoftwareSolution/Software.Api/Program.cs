@@ -1,6 +1,8 @@
 using Marten;
+using Software.Api.Vendors;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddValidation();
 builder.AddServiceDefaults(); // this is using the Service Defaults project, setting up SRE etc.
 // Add services to the container.
 
@@ -46,5 +48,10 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapPost("/ma/vendors", (CreateVendorRequestModel request) =>
+{
+    return TypedResults.Ok();
+});
 app.MapDefaultEndpoints(); // this comes from service defaults, and this is mostly health checks.
 app.Run();
